@@ -1,0 +1,69 @@
+import { StatusBar } from 'expo-status-bar';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, Button as RNButton } from 'react-native';
+
+import { Button, InputField, ErrorMessage } from '../components';
+import Firebase from '../config/firebase';
+
+const auth = Firebase.auth();
+
+
+export default function SignupScreen({ navigation }) {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [passwordVisibility, setPasswordVisibility] = useState(true);
+    const [rightIcon, setRightIcon] = useState('eye');
+    const [signupError, setSignupError] = useState('');
+
+    return(
+        <View style={styles.container}>
+            <StatusBar style='dark-content' />
+            <Text style={styles.title}>Create new account</Text>
+
+            <InputField
+                inputStyle={{fontSize: 14}}
+                containerStyle={{backgroundColor: '#fff',marginBottom: 20}}
+                leftIcon='email'
+                placeholder='Enter email'
+                autoCapitalize='none'
+                keyboardType='email-address'
+                textContentType='emailAddress'
+                autoFocus={true}
+                value={email}
+                onChangeText={text => setEmail(text)}
+            />
+
+            <InputField
+                inputStyle={{fontSize: 14}}
+                containerStyle={{backgroundColor: '#fff',marginBottom: 20}}
+                leftIcon='lock'
+                placeholder='Enter password'
+                autoCapitalize='none'
+                autoCorrect={false}
+                secureTextEntry={passwordVisibility}
+                textContentType='password'
+                rightIcon={rightIcon}
+                value={password}
+                onChangeText={text => setPassword(text)}
+                handlePasswordVisibility={handlePasswordVisibility}
+            />
+
+            {signupError ? <ErrorMessage error={signupError} visible={true} /> : null}
+            <Button
+              onPress={onHandleSignup}
+              backgroundColor='#f57c00'
+              title='Signup'
+              tileColor='#fff'
+              titleSize={20}
+              containerStyle={{marginBottom: 24}}
+            />
+            <RNButton
+              onPress={() => navigation.navigate('Login')}
+              title='Go to Login'
+              color='#fff'
+            />
+        
+        </View>
+    )
+
+};
