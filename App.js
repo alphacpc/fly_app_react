@@ -5,7 +5,7 @@ import { StyleSheet, Text, View } from 'react-native';
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Init fly app!</Text>
+      <Text>Init fly app and first commit!</Text>
       <StatusBar style="auto" />
     </View>
   );
