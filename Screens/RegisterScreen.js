@@ -45,13 +45,13 @@ const RegisterScreen = () => {
 
             {/* Fields form */}
             <View style={styles.ViewTextInput}>
-                <TextInput  style={styles.TextInput} onChangeText={text => setUsername(text)} 
+                <TextInput  style={styles.TextInput} value={username} onChangeText={text => setUsername(text)} 
                             placeholder="Entrer votre nom d'utilisateur"/>
                 
-                <TextInput  style={styles.TextInput} onChangeText={text => setEmail(text)} 
+                <TextInput  style={styles.TextInput} value={email} onChangeText={text => setEmail(text)} 
                             placeholder="Entrer votre adresse e-mail"/>
                 
-                <TextInput  style={styles.TextInput} onChangeText={text => setPassword(text)} 
+                <TextInput  style={styles.TextInput} value={password} onChangeText={text => setPassword(text)} 
                             placeholder="Entrer votre mot de passe" secureTextEntry/>
             </View>
 

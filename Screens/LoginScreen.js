@@ -1,83 +1,134 @@
 import React, {useState, useContext} from 'react';
-import { StyleSheet, Text, View, TextInput, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, Button, Image, Dimensions, View, TextInput, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import FirebaseContext from "../firebase/FirebaseContext";
 
+const screenWidth = Dimensions.get("screen").width;    
 
 const LoginScreen = () => {
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const firebase = useContext(FirebaseContext)
+    // const firebase = useContext(FirebaseContext)
 
-    const handleConnect = async() => {
-        try{
-            const user = await firebase.connectUser(email,password);
-            if(user){
-                console.log("Success connexion")
-            } 
-        }
-        catch(error){
-            console.log(error);
-        }
-    }
-
-
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    
     return (
-        <KeyboardAvoidingView style={styles.container} behavior='padding'>
-            <View style={styles.inputContainer}>
-                <TextInput
-                    placeholder="Entrer votre adresse email"
-                    style={styles.inputText}
-                    value={email} onChangeText={ text => setEmail(text)}
-                />
-                <TextInput
-                    placeholder="Entrer votre mot de passe"
-                    style={styles.inputText}
-                    value={password} onChangeText={ text => setPassword(text)}
-                    secureTextEntry
-                />
-            </View>
+        <SafeAreaView style={styles.SigninContainer}>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                <View style={styles.ViewWelcome}>
+                    <Image source={require("./../assets/images/logo3.png")} style={styles.travelImage}/>
+                    <Text style={styles.TextMessage}>Bienvenue sur Tooky</Text>
+                </View>
 
-            <View>
-                <TouchableOpacity
-                    onPress={handleConnect}
-                    style={styles.button}
-                >
-                    <Text style={styles.buttonText}>Connexion</Text>
-                </TouchableOpacity>
-            </View>
-        </KeyboardAvoidingView>
+                {/* Fields form */}
+                <View style={styles.ViewTextInput}>
+
+                    <TextInput  style={styles.TextInput} value={email} onChangeText={text => setEmail(text)} 
+                                placeholder="Entrer votre adresse e-mail"/>
+
+                    <TextInput  style={styles.TextInput} value={password} onChangeText={text => setPassword(text)} 
+                                placeholder="Entrer votre mot de passe" secureTextEntry/>
+                </View>
+
+                {/* Forget password */}
+                <View style={styles.ViewForgetPassword}>
+                    <Text style={styles.TextForgetPassword}>Mot de passe oublie</Text>
+                </View>
+
+                {/* Button signup */}
+                <View>
+                    <TouchableOpacity style={styles.TouchableButton}>
+                        <Text style={styles.TouchableTextButton}>Connexion</Text>
+                    </TouchableOpacity>
+                </View>
+
+                {/* Alredy Account connect */}
+                <View style={styles.ViewAlreadyAccount}>
+                    <Text style={styles.TextAlreadyAccount}>Vous n'avez pas de compte !</Text>
+                    <Button style={styles.ButtonAlreadyAccount} 
+                        color="orangered" title="s'inscrire"/>
+                </View>
+            </ScrollView>
+        </SafeAreaView>
+
     )
 }
 
 export default LoginScreen
 
 const styles = StyleSheet.create({
-    container:{
+    SigninContainer:{
         flex: 1,
-        justifyContent: 'center',
-        alignItems:'center'
+        paddingHorizontal: 10,
+        paddingTop: 20,
+        // backgroundColor:'#2FDD92'
     },
-    inputContainer:{
-        width: '80%'
-    },
-    inputText:{
-        backgroundColor:'greenyellow',
-        paddingHorizontal:15,
-        paddingVertical:15,
-        borderRadius:10,
-        marginTop:20
-    },
-    button:{
-        backgroundColor:'#0782f9',
-        padding: 15,
-        borderRadius:10,
+    ViewWelcome:{
+        display: 'flex',
+        flexDirection:"row-reverse",
+        flexWrap: 'wrap',
+        justifyContent:'center',
         alignItems:'center',
-        marginTop:10
+        width: screenWidth,
+        paddingHorizontal: 10,
     },
-    buttonText:{
-        color:'white'
+    TextMessage:{
+        fontSize: 35,
+        letterSpacing: 0,
+        width: '50%',
+        fontWeight: 'bold'
+        // fontFamily: 'Inter_800ExtraBold'
+    },
+    travelImage:{
+        width: '50%',
+        height: screenWidth / 2,
+    },
+    //Fields   
+    ViewTextInput:{
+        paddingHorizontal: 5,
+        marginVertical: 20,
+    },
+    TextInput:{
+        backgroundColor:'white',
+        paddingVertical: 10,
+        paddingLeft: 15,
+        marginVertical: 10,
+        borderRadius: 20,
+        letterSpacing: 1.4,
+    },
+    // Forget password
+    ViewForgetPassword:{
+        marginBottom: 20,
+        width:'100%'
+    },
+    TextForgetPassword:{
+        textAlign:'right'
+    },
+    // Touchable Button
+    TouchableButton:{
+        backgroundColor:'yellow',
+        paddingVertical:15,
+        borderRadius: 30,
+        marginBottom: 20
+    },
+    TouchableTextButton:{
+        textAlign:'center',
+        // fontFamily:'Inter_600SemiBold',
+        letterSpacing: 2,
+    },
+    // Already Account
+    ViewAlreadyAccount:{
+        display:"flex",
+        flexDirection:'row',
+        alignItems:'center',
+        marginTop: 30,
+    },
+    ButtonAlreadyAccount:{
+        marginLeft:0,    
+    },
+    TextAlreadyAccount:{
+        marginRight:5
     }
 })
