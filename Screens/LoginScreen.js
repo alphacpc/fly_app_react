@@ -1,23 +1,28 @@
-import React, {useState, useEffect} from 'react'
-import { StyleSheet, Text, View, TextInput, ScrollView, KeyboardAvoidingView } from 'react-native'
+import React, {useState, useContext} from 'react';
+import { StyleSheet, Text, View, TextInput, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
+import FirebaseContext from "../firebase/FirebaseContext";
 
-import auth from '../firebase';
 
 const LoginScreen = () => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const firebase = useContext(FirebaseContext)
 
-    const handleSignup = async () =>{
+    const handleConnect = async() => {
         try{
-            await auth.createUserWithEmailAndPassword(email, password);
-
-        }catch(err){
-            console.log(err);
+            const user = await firebase.connectUser(email,password);
+            if(user){
+                console.log("Success connexion")
+            } 
+        }
+        catch(error){
+            console.log(error);
         }
     }
+
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior='padding'>
@@ -37,7 +42,7 @@ const LoginScreen = () => {
 
             <View>
                 <TouchableOpacity
-                    onPress={handleSignup}
+                    onPress={handleConnect}
                     style={styles.button}
                 >
                     <Text style={styles.buttonText}>Connexion</Text>
