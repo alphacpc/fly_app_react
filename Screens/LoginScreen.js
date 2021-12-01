@@ -7,12 +7,16 @@ import FirebaseContext from "../firebase/FirebaseContext";
 
 const screenWidth = Dimensions.get("screen").width;    
 
-const LoginScreen = () => {
+const LoginScreen = ({navigation}) => {
 
     // const firebase = useContext(FirebaseContext)
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
+    const handleRedirecSignup = () => {
+        navigation.navigate("Register")
+    }
     
     return (
         <SafeAreaView style={styles.SigninContainer}>
@@ -48,7 +52,7 @@ const LoginScreen = () => {
                 <View style={styles.ViewAlreadyAccount}>
                     <Text style={styles.TextAlreadyAccount}>Vous n'avez pas de compte !</Text>
                     <Button style={styles.ButtonAlreadyAccount} 
-                        color="orangered" title="s'inscrire"/>
+                        color="orangered" title="s'inscrire" onPress={handleRedirecSignup}/>
                 </View>
             </ScrollView>
         </SafeAreaView>
