@@ -1,8 +1,9 @@
 import React, {useState, useContext, useEffect} from 'react'
-import { StyleSheet, Text, Image, View, TextInput, ScrollView, KeyboardAvoidingView, Button, Dimensions, Pressable } from 'react-native';
+import { StyleSheet, Text, Image, View, TextInput, ScrollView, KeyboardAvoidingView, Button, Dimensions, Pressable, ActivityIndicator } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { FontAwesome } from '@expo/vector-icons'; 
+import { FontAwesome, AntDesign } from '@expo/vector-icons';
+
 import {useFonts,
     Inter_100Thin,
     Inter_200ExtraLight,
@@ -18,7 +19,6 @@ import LoginScreen from './LoginScreen';
 import Firebase from '../firebase/firebase';
 
 const screenWidth = Dimensions.get("screen").width;
-const screenHeight = Dimensions.get("screen").height;
 
 const RegisterScreen = ({navigation}) => {
 
@@ -39,6 +39,7 @@ const RegisterScreen = ({navigation}) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [displayPassword, setDisplayPassword] = useState(false);
+    const [submitLoader, setSubmitLoader] = useState(false);
 
 
     const handleRedirectSignin = () => {
@@ -53,20 +54,20 @@ const RegisterScreen = ({navigation}) => {
     <FontAwesome name="eye" size={14} color="black" /> 
     
     const handleSubmit = async() =>{
+        setSubmitLoader(true);
         try{
             if(fname!="" || lname!="" || email!="" || password!=""){
                 const newUser = await Firebase.singupUser(email.toLocaleLowerCase(),password);
-                //console.log(newUser);
                 console.log(newUser.user.uid)
                 if(newUser){
-                    await Firebase.currentUser(newUser.user.uid).set({"Firstname":fname, "Lastname":lname,"Addresse email": email});
-                    //setEmail("");
-                    //setfname("");
-                    //setlname("");
-                    //setPassword("");
+                    Firebase.currentUser(newUser.user.uid).set({"Firstname":fname, "Lastname":lname,"Addresse email": email});
                 }
-                //navigation.navigate("Login");
-
+                setSubmitLoader(false);
+                navigation.navigate("Login");
+                setEmail("");
+                setfname("");
+                setlname("");
+                setPassword("");
             }
             
         }catch(error){
@@ -84,10 +85,10 @@ const RegisterScreen = ({navigation}) => {
 
             {/* Fields form */}
             <View style={styles.ViewTextInput}>
-                <TextInput  style={styles.TextInput} value={fname} onChangeText={text => setUsername(text)} 
+                <TextInput  style={styles.TextInput} value={fname} onChangeText={text => setFname(text)} 
                             placeholder="Entrer votre prenom"/>
                 
-                <TextInput  style={styles.TextInput} value={lname} onChangeText={text => setUsername(text)} 
+                <TextInput  style={styles.TextInput} value={lname} onChangeText={text => setLname(text)} 
                             placeholder="Entrer votre nom de famille"/>
 
                 <TextInput  style={styles.TextInput} value={email} onChangeText={text => setEmail(text)} 
@@ -104,13 +105,16 @@ const RegisterScreen = ({navigation}) => {
 
             {/* Forget password */}
             <View style={styles.ViewForgetPassword}>
-                <Text style={styles.TextForgetPassword}>Mot de passe oublie</Text>
+                <Pressable onPress={() => navigation.navigate("ResetPassword")}>
+                    <Text style={styles.TextForgetPassword}>Mot de passe oublie</Text>
+                </Pressable>
             </View>
 
             {/* Button signup */}
             <View>
                 <TouchableOpacity style={styles.TouchableButton} onPress={handleSubmit}>
                     <Text style={styles.TouchableTextButton}>Inscription</Text>
+                    {(submitLoader) ? <ActivityIndicator color="#d2d2d2"/> : null}
                 </TouchableOpacity>
             </View>
 
@@ -192,12 +196,15 @@ const styles = StyleSheet.create({
         backgroundColor:'yellow',
         paddingVertical:15,
         borderRadius: 30,
-        marginBottom: 20
+        marginBottom: 20,
+        flexDirection:'row',
+        justifyContent:'center'
     },
     TouchableTextButton:{
         textAlign:'center',
         fontFamily:'Inter_600SemiBold',
         letterSpacing: 2,
+        marginRight:4
     },
     // Already Account
     ViewAlreadyAccount:{
