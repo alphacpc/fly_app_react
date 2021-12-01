@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { StyleSheet, Text, Button, Image, Dimensions, View, TextInput, ScrollView, KeyboardAvoidingView, ActivityIndicator, Pressable } from 'react-native';
+import { StyleSheet, Text, Button, Image, Dimensions, View, TextInput, ScrollView, ActivityIndicator } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesome } from '@expo/vector-icons';
@@ -13,7 +13,6 @@ const ResetPasswordScreen = ({navigation}) => {
     const [email, setEmail] = useState("");
     const [submitLoader, setSubmitLoader] = useState(false);
     const [message, setMessage] = useState("");
-    // const [message, setMessage] = useState("Désolé cet adresse mail n'existe pas, veuillez réessayer avec un autre !");
     const [messageStatus, setMessageStatus] = useState(false);
 
     const handleRedirectSignin = () => {
@@ -27,54 +26,58 @@ const ResetPasswordScreen = ({navigation}) => {
     const handleSubmit = async() =>{
         setSubmitLoader(true);
         try{
-            await Firebase.resetPasssword(email);
+            await Firebase.resetPasssword(email.trim());
             setMessageStatus(true);
             setMessage(`veuillez vérifier votre boîte de réception, un mail a été envoyé à l'adresse ${email} !`);
             setTimeout(()=>{
-                //navigation.navigate("Login");
+                navigation.navigate("Login");
+                setMessage("");
             },5000)
             setSubmitLoader(false);
             setEmail("");
+            setSubmitLoader(false);
         }
         catch(error){
             setMessage("Désolé cet adresse mail n'existe pas, veuillez réessayer avec un autre !");
             console.log(error);
+            setSubmitLoader(false);
+            setTimeout(() => setMessage(""),5000);
         }
     }
 
     return (
         <SafeAreaView style={styles.SigninContainer}>
-        <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.ViewWelcome}>
-            <Image source={require("./../assets/images/logo3.png")} style={styles.travelImage}/>
-            <Text style={styles.TextMessageWelcome}>Bienvenue sur Tooky,</Text>
-            <Text style={styles.TextMessageAction}>Vous voulez Réinitialiser votre mot de passe</Text>
-        </View>
+            <ScrollView showsVerticalScrollIndicator={false}>
+                <View style={styles.ViewWelcome}>
+                    <Image source={require("./../assets/images/logo3.png")} style={styles.travelImage}/>
+                    <Text style={styles.TextMessageWelcome}>Bienvenue sur Tooky,</Text>
+                    <Text style={styles.TextMessageAction}>Vous voulez Réinitialiser votre mot de passe</Text>
+                </View>
 
-        <View>{displayMessage}</View>
-        
-        {/* Fields form */}
-        <View style={styles.ViewTextInput}>
-            <TextInput  style={styles.TextInput} value={email} onChangeText={text => setEmail(text)} 
-                        placeholder="Entrer votre adresse e-mail"/>
-        </View>
+                <View>{displayMessage}</View>
 
-        {/* Button signup */}
-        <View>
-            <TouchableOpacity onPress={handleSubmit} style={styles.TouchableButton}>
-                <Text style={styles.TouchableTextButton}>Envoyer</Text>
-                {(submitLoader) ? <ActivityIndicator color="#d2d2d2"/> : null}
-            </TouchableOpacity>
-        </View>
+                {/* Fields form */}
+                <View style={styles.ViewTextInput}>
+                    <TextInput  style={styles.TextInput} value={email} onChangeText={text => setEmail(text)} 
+                                placeholder="Entrer votre adresse e-mail"/>
+                </View>
 
-        {/* Alredy Account connect */}
-        <View style={styles.ViewAlreadyAccount}>
-            <Text style={styles.TextAlreadyAccount}>Vous avez deja un compte !</Text>
-            <Button style={styles.ButtonAlreadyAccount} 
-                color="orangered" title="se connecter" onPress={handleRedirectSignin}/>
-        </View>
-    </ScrollView>
-</SafeAreaView>
+                {/* Button signup */}
+                <View>
+                    <TouchableOpacity onPress={handleSubmit} style={styles.TouchableButton}>
+                        <Text style={styles.TouchableTextButton}>Envoyer</Text>
+                        {(submitLoader) ? <ActivityIndicator color="#d2d2d2"/> : null}
+                    </TouchableOpacity>
+                </View>
+
+                {/* Alredy Account connect */}
+                <View style={styles.ViewAlreadyAccount}>
+                    <Text style={styles.TextAlreadyAccount}>Vous avez deja un compte !</Text>
+                    <Button style={styles.ButtonAlreadyAccount} 
+                        color="orangered" title="se connecter" onPress={handleRedirectSignin}/>
+                </View>
+            </ScrollView>
+        </SafeAreaView>
     )
 }
 
@@ -149,6 +152,7 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         alignItems:'center',
         marginTop: 10,
+        marginBottom:20
     },
     ButtonAlreadyAccount:{
         marginLeft:0,    
