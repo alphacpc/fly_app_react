@@ -1,7 +1,8 @@
 import React, {useState, useContext, useEffect} from 'react'
-import { StyleSheet, Text, Image, View, TextInput, ScrollView, KeyboardAvoidingView, Button, Dimensions } from 'react-native';
+import { StyleSheet, Text, Image, View, TextInput, ScrollView, KeyboardAvoidingView, Button, Dimensions, Pressable } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { FontAwesome } from '@expo/vector-icons'; 
 import {useFonts,
     Inter_100Thin,
     Inter_200ExtraLight,
@@ -47,6 +48,9 @@ const RegisterScreen = ({navigation}) => {
     const handleDisplayPassword = () => {
         setDisplayPassword(!displayPassword);
     }
+
+    const checkEyes = (displayPassword) ? <FontAwesome name="eye-slash" size={14} color="black" /> :
+    <FontAwesome name="eye" size={14} color="black" /> 
     
     const handleSubmit = async() =>{
         try{
@@ -88,11 +92,13 @@ const RegisterScreen = ({navigation}) => {
 
                 <TextInput  style={styles.TextInput} value={email} onChangeText={text => setEmail(text)} 
                             placeholder="Entrer votre adresse e-mail"/>
+
                 
                 <View style={styles.ViewPassword}>
                     <TextInput value={password} onChangeText={text => setPassword(text)} 
-                            placeholder="Entrer votre mot de passe" secureTextEntry/>
-                    <Text>Hello</Text>
+                            placeholder="Entrer votre mot de passe" secureTextEntry={displayPassword}/>
+                    <Pressable onPress={handleDisplayPassword}>{checkEyes}</Pressable>
+
                 </View>
             </View>
 
