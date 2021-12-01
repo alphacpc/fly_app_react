@@ -1,5 +1,5 @@
 import React, {useState, useContext} from 'react';
-import { StyleSheet, Text, Button, Image, Dimensions, View, TextInput, ScrollView, KeyboardAvoidingView, ActivityIndicator, Pressable } from 'react-native';
+import { StyleSheet, Text, Button, Image, Dimensions, View, TextInput, ScrollView, ActivityIndicator, Pressable } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesome } from '@expo/vector-icons';
