@@ -11,78 +11,67 @@ const screenWidth = Dimensions.get("screen").width;
 const ResetPasswordScreen = ({navigation}) => {
 
     const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [displayPassword, setDisplayPassword] = useState(false);
     const [submitLoader, setSubmitLoader] = useState(false);
+    const [message, setMessage] = useState("");
+    // const [message, setMessage] = useState("Désolé cet adresse mail n'existe pas, veuillez réessayer avec un autre !");
+    const [messageStatus, setMessageStatus] = useState(false);
 
-
-    const handleRedirectSignup = () => {
-        navigation.navigate("Register")
+    const handleRedirectSignin = () => {
+        navigation.navigate("Login")
     }
 
-    const handleDisplayPassword = () =>{
-        setDisplayPassword(!displayPassword);
-    }
+    const displayMessage = (message !== "")? (
+         <Text style={(messageStatus)? styles.PositiveMessage : styles.NegativeMessage} >{message}</Text>
+    ): null;
 
     const handleSubmit = async() =>{
         setSubmitLoader(true);
         try{
-            await Firebase.connectUser(email,password);
-            navigation.navigate("Home");
+            await Firebase.resetPasssword(email);
+            setMessageStatus(true);
+            setMessage(`veuillez vérifier votre boîte de réception, un mail a été envoyé à l'adresse ${email} !`);
+            setTimeout(()=>{
+                //navigation.navigate("Login");
+            },5000)
             setSubmitLoader(false);
             setEmail("");
-            setPassword("");
         }
         catch(error){
+            setMessage("Désolé cet adresse mail n'existe pas, veuillez réessayer avec un autre !");
             console.log(error);
         }
     }
-
-    const checkEyes = (displayPassword) ? <FontAwesome name="eye-slash" size={14} color="black" /> :
-    <FontAwesome name="eye" size={14} color="black" /> 
-
 
     return (
         <SafeAreaView style={styles.SigninContainer}>
         <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.ViewWelcome}>
             <Image source={require("./../assets/images/logo3.png")} style={styles.travelImage}/>
-            <Text style={styles.TextMessage}>Bienvenue sr Tooky</Text>
+            <Text style={styles.TextMessageWelcome}>Bienvenue sur Tooky,</Text>
+            <Text style={styles.TextMessageAction}>Vous voulez Réinitialiser votre mot de passe</Text>
         </View>
 
+        <View>{displayMessage}</View>
+        
         {/* Fields form */}
         <View style={styles.ViewTextInput}>
-
             <TextInput  style={styles.TextInput} value={email} onChangeText={text => setEmail(text)} 
                         placeholder="Entrer votre adresse e-mail"/>
-            
-            <View style={styles.ViewPassword}>
-                <TextInput value={password} style={styles.TextInputPassword} onChangeText={text => setPassword(text)} 
-                        placeholder="Entrer votre mot de passe" secureTextEntry={displayPassword}/>
-                <Pressable onPress={handleDisplayPassword}>{checkEyes}</Pressable>
-            </View>
-        </View>
-
-        {/* Forget password */}
-        <View style={styles.ViewForgetPassword}>
-            <Pressable onPress={() => navigation.navigate("ResetPassword")}>
-                <Text style={styles.TextForgetPassword}>Mot de passe oublie</Text>
-            </Pressable>
         </View>
 
         {/* Button signup */}
         <View>
             <TouchableOpacity onPress={handleSubmit} style={styles.TouchableButton}>
-                <Text style={styles.TouchableTextButton}>Connexion</Text>
+                <Text style={styles.TouchableTextButton}>Envoyer</Text>
                 {(submitLoader) ? <ActivityIndicator color="#d2d2d2"/> : null}
             </TouchableOpacity>
         </View>
 
         {/* Alredy Account connect */}
         <View style={styles.ViewAlreadyAccount}>
-            <Text style={styles.TextAlreadyAccount}>Vous n'avez pas de compte !</Text>
+            <Text style={styles.TextAlreadyAccount}>Vous avez deja un compte !</Text>
             <Button style={styles.ButtonAlreadyAccount} 
-                color="orangered" title="s'inscrire" onPress={handleRedirectSignup}/>
+                color="orangered" title="se connecter" onPress={handleRedirectSignin}/>
         </View>
     </ScrollView>
 </SafeAreaView>
@@ -97,23 +86,29 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingHorizontal: 10,
         paddingTop: 20,
-        // backgroundColor:'#2FDD92'
+        backgroundColor:'black'
     },
     ViewWelcome:{
         display: 'flex',
-        flexDirection:"row-reverse",
+        // flexDirection:"row-reverse",
         flexWrap: 'wrap',
         justifyContent:'center',
         alignItems:'center',
         width: screenWidth,
         paddingHorizontal: 10,
     },
-    TextMessage:{
-        fontSize: 35,
+    TextMessageWelcome:{
+        fontSize: 45,
         letterSpacing: 0,
-        width: '50%',
+        width: '100%',
+        color:'#ffffff',
         fontWeight: 'bold'
-        // fontFamily: 'Inter_800ExtraBold'
+    },
+    TextMessageAction:{
+        fontSize: 24,
+        letterSpacing: 1.2,
+        width: '100%',
+        color:'#ffffff'
     },
     travelImage:{
         width: '50%',
@@ -132,31 +127,6 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         letterSpacing: 1.4,
     },
-    //Fiel Password
-    TextInputPassword:{
-        letterSpacing:1.4,
-        width:'90%'
-    },
-    // View Password
-    ViewPassword:{
-        backgroundColor:'white',
-        paddingVertical: 10,
-        paddingHorizontal: 15,
-        marginVertical: 10,
-        borderRadius: 20,
-        display:'flex',
-        flexDirection: 'row',
-        alignItems:'center',
-        justifyContent:'space-between'
-    },
-    // Forget password
-    ViewForgetPassword:{
-        marginBottom: 20,
-        width:'100%'
-    },
-    TextForgetPassword:{
-        textAlign:'right'
-    },
     // Touchable Button
     TouchableButton:{
         backgroundColor:'yellow',
@@ -168,8 +138,9 @@ const styles = StyleSheet.create({
     },
     TouchableTextButton:{
         textAlign:'center',
+        fontWeight:'bold',
         // fontFamily:'Inter_600SemiBold',
-        letterSpacing: 2,
+        letterSpacing: 1.4,
         paddingRight:5
     },
     // Already Account
@@ -177,13 +148,39 @@ const styles = StyleSheet.create({
         display:"flex",
         flexDirection:'row',
         alignItems:'center',
-        marginTop: 30,
+        marginTop: 10,
     },
     ButtonAlreadyAccount:{
         marginLeft:0,    
     },
     TextAlreadyAccount:{
-        marginRight:5
+        marginRight:5,
+        color:"#ffffff"
+    },
+    //Style From Message
+    NegativeMessage:{
+        backgroundColor:'#f05',
+        color:'#ffffff',
+        paddingHorizontal: 15,
+        paddingVertical:5,
+        marginTop:10,
+        marginBottom: -10,
+        letterSpacing: 1,
+        fontSize: 14,
+        lineHeight:20,
+        borderRadius:4
+    },
+    PositiveMessage:{
+        backgroundColor:'greenyellow',
+        color:'#000',
+        paddingHorizontal: 15,
+        paddingVertical:5,
+        marginTop:10,
+        marginBottom: -10,
+        letterSpacing: 1,
+        fontSize: 14,
+        lineHeight:20,
+        borderRadius:4
     }
 })
 
