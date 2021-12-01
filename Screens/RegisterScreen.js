@@ -96,7 +96,7 @@ const RegisterScreen = ({navigation}) => {
 
                 
                 <View style={styles.ViewPassword}>
-                    <TextInput value={password} onChangeText={text => setPassword(text)} 
+                    <TextInput value={password} style={styles.TextInputPassword} onChangeText={text => setPassword(text)} 
                             placeholder="Entrer votre mot de passe" secureTextEntry={displayPassword}/>
                     <Pressable onPress={handleDisplayPassword}>{checkEyes}</Pressable>
 
@@ -169,6 +169,11 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         borderRadius: 20,
         letterSpacing: 1.4,
+    },
+    //Fiel Password
+    TextInputPassword:{
+        letterSpacing:1.4,
+        width:'90%'
     },
     // View Password
     ViewPassword:{

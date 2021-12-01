@@ -1,9 +1,12 @@
 import React, {useState, useContext} from 'react';
-import { StyleSheet, Text, Button, Image, Dimensions, View, TextInput, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, Button, Image, Dimensions, View, TextInput, ScrollView, KeyboardAvoidingView, ActivityIndicator, Pressable } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { FontAwesome } from '@expo/vector-icons';
+
 
 import FirebaseContext from "../firebase/FirebaseContext";
+import Firebase from '../firebase/firebase';
 
 const screenWidth = Dimensions.get("screen").width;    
 
@@ -13,12 +16,37 @@ const LoginScreen = ({navigation}) => {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [displayPassword, setDisplayPassword] = useState(false);
+    const [submitLoader, setSubmitLoader] = useState(false);
 
-    const handleRedirecSignup = () => {
+
+    const handleRedirectSignup = () => {
         navigation.navigate("Register")
     }
+
+    const handleDisplayPassword = () =>{
+        setDisplayPassword(!displayPassword);
+    }
+
+    const handleSubmit = async() =>{
+        setSubmitLoader(true);
+        try{
+            await Firebase.connectUser(email,password);
+            navigation.navigate("Home");
+            setSubmitLoader(false);
+            setEmail("");
+            setPassword("");
+        }
+        catch(error){
+            console.log(error);
+        }
+    }
+
+    const checkEyes = (displayPassword) ? <FontAwesome name="eye-slash" size={14} color="black" /> :
+    <FontAwesome name="eye" size={14} color="black" /> 
     
     return (
+
         <SafeAreaView style={styles.SigninContainer}>
                 <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={styles.ViewWelcome}>
@@ -31,20 +59,26 @@ const LoginScreen = ({navigation}) => {
 
                     <TextInput  style={styles.TextInput} value={email} onChangeText={text => setEmail(text)} 
                                 placeholder="Entrer votre adresse e-mail"/>
-
-                    <TextInput  style={styles.TextInput} value={password} onChangeText={text => setPassword(text)} 
-                                placeholder="Entrer votre mot de passe" secureTextEntry/>
+                    
+                    <View style={styles.ViewPassword}>
+                        <TextInput value={password} style={styles.TextInputPassword} onChangeText={text => setPassword(text)} 
+                                placeholder="Entrer votre mot de passe" secureTextEntry={displayPassword}/>
+                        <Pressable onPress={handleDisplayPassword}>{checkEyes}</Pressable>
+                    </View>
                 </View>
 
                 {/* Forget password */}
                 <View style={styles.ViewForgetPassword}>
-                    <Text style={styles.TextForgetPassword}>Mot de passe oublie</Text>
+                    <Pressable onPress={() => navigation.navigate("ResetPassword")}>
+                        <Text style={styles.TextForgetPassword}>Mot de passe oublie</Text>
+                    </Pressable>
                 </View>
 
                 {/* Button signup */}
                 <View>
-                    <TouchableOpacity style={styles.TouchableButton}>
+                    <TouchableOpacity onPress={handleSubmit} style={styles.TouchableButton}>
                         <Text style={styles.TouchableTextButton}>Connexion</Text>
+                        {(submitLoader) ? <ActivityIndicator color="#d2d2d2"/> : null}
                     </TouchableOpacity>
                 </View>
 
@@ -52,7 +86,7 @@ const LoginScreen = ({navigation}) => {
                 <View style={styles.ViewAlreadyAccount}>
                     <Text style={styles.TextAlreadyAccount}>Vous n'avez pas de compte !</Text>
                     <Button style={styles.ButtonAlreadyAccount} 
-                        color="orangered" title="s'inscrire" onPress={handleRedirecSignup}/>
+                        color="orangered" title="s'inscrire" onPress={handleRedirectSignup}/>
                 </View>
             </ScrollView>
         </SafeAreaView>
@@ -102,6 +136,23 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         letterSpacing: 1.4,
     },
+    //Fiel Password
+    TextInputPassword:{
+        letterSpacing:1.4,
+        width:'90%'
+    },
+    // View Password
+    ViewPassword:{
+        backgroundColor:'white',
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        marginVertical: 10,
+        borderRadius: 20,
+        display:'flex',
+        flexDirection: 'row',
+        alignItems:'center',
+        justifyContent:'space-between'
+    },
     // Forget password
     ViewForgetPassword:{
         marginBottom: 20,
@@ -115,12 +166,15 @@ const styles = StyleSheet.create({
         backgroundColor:'yellow',
         paddingVertical:15,
         borderRadius: 30,
-        marginBottom: 20
+        marginBottom: 20,
+        flexDirection:'row',
+        justifyContent:'center'
     },
     TouchableTextButton:{
         textAlign:'center',
         // fontFamily:'Inter_600SemiBold',
         letterSpacing: 2,
+        paddingRight:5
     },
     // Already Account
     ViewAlreadyAccount:{
