@@ -6,6 +6,8 @@ import Travel from "./../assets/images/Travel2.png";
 
 
 import API from "../AvionStackApi";
+import datas from '../Values';
+
 
 const widthScreen = Dimensions.get("screen").width;
 
@@ -16,14 +18,19 @@ const HomeScreen = () => {
     const [loaderData, setLoaderData] = useState(true);
 
     const fetchFlightsData = async() => {
-        try{
-            const response = await axios.get(url);
-            setFlightData(await response.data.data);
-            setLoaderData(false)
-        }
-        catch(error){
-            console.log(error);
-        }
+        // try{
+        //     const response = await axios.get(url);
+        //     console.log(response)
+        //     setFlightData(await response.data.data);
+        //     setLoaderData(false)
+        // }
+        // catch(error){
+        //     console.log(error);
+        // }
+
+        setFlightData(datas);
+        setLoaderData(false)
+
     }
 
     const SimpleFly = ({item}) => {
@@ -53,7 +60,6 @@ const HomeScreen = () => {
                 </View>
                 <View>
                     <Text>Arrivee</Text>
-                    {/* <Text style={{textAlign:'right'}}>{item.arrival.scheduled}</Text> */}
                     <Text style={{textAlign:'right'}}>{item.arrival.scheduled.substring(item.arrival.scheduled.indexOf("T")+1,item.arrival.scheduled.indexOf("+")-3)}</Text>
 
                 </View>
@@ -72,7 +78,6 @@ const HomeScreen = () => {
     },[])
 
 
-
     return (!loaderData)? (
         <SafeAreaView style={styles.HomeContainer}>
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -81,6 +86,7 @@ const HomeScreen = () => {
                 </View>
 
                 <View>
+                    <Text>{flightsData.length} vols disponibles, pour le moment</Text>
                     <FlatList
                         data={flightsData}
                         showsVerticalScrollIndicator={false}
@@ -94,7 +100,7 @@ const HomeScreen = () => {
     ): (<SafeAreaView style={styles.HomeContainer}>
         <ScrollView showsVerticalScrollIndicator={false}>
             <View>
-                <Text>HomeScreen modification bug</Text>
+                <Text>HomeScreen modification test</Text>
             </View>
             <ActivityIndicator color="#d2d2d2"/>
         </ScrollView>
