@@ -1,8 +1,8 @@
 import axios from 'axios';
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, View, ActivityIndicator, SafeAreaView, FlatList, ScrollView, Dimensions, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Image, ActivityIndicator, SafeAreaView, FlatList, ScrollView, Dimensions, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; 
-
+import Travel from "./../assets/images/Travel2.png";
 
 
 import API from "../AvionStackApi";
@@ -40,21 +40,28 @@ const HomeScreen = () => {
                 </View>
             </View>
 
+            <Image source={Travel} style={{
+                    width:widthScreen/1.2,
+                    height: 48,
+                    marginBottom:10,
+            }}/>
 
             <View style={styles.ViewTimes}>
                 <View>
                     <Text>Depart</Text>
-                    <Text>{item.departure.iata} </Text>
+                    <Text>{item.departure.scheduled.substring(item.departure.scheduled.indexOf("T")+1,item.departure.scheduled.indexOf("+")-3)}</Text>
                 </View>
                 <View>
                     <Text>Arrivee</Text>
-                    <Text style={{textAlign:'right'}}>{item.arrival.iata}</Text>
+                    {/* <Text style={{textAlign:'right'}}>{item.arrival.scheduled}</Text> */}
+                    <Text style={{textAlign:'right'}}>{item.arrival.scheduled.substring(item.arrival.scheduled.indexOf("T")+1,item.arrival.scheduled.indexOf("+")-3)}</Text>
+
                 </View>
             </View>
 
             <View style={styles.ViewMorePressable}>
-                <Pressable>
-                    <Text>View more</Text>
+                <Pressable style={styles.PressableButton}>
+                    <Text style={styles.PressableText}>View more</Text>
                 </Pressable>
             </View>
         </View>
@@ -106,7 +113,7 @@ const styles = StyleSheet.create({
     },
     // SimpleFlyContainer
     SimpleFlyContainer:{
-        backgroundColor: 'orange',
+        backgroundColor: '#ffffff',
         marginBottom: 25,
         borderRadius: 30,
         paddingHorizontal: 20,
@@ -117,7 +124,6 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'space-between',
         alignItems:'center',
-        backgroundColor:'yellow',
         paddingBottom: 15
     },
     ViewDeparture:{
@@ -137,11 +143,23 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'space-between',
         alignItems:'center',
-        backgroundColor:'yellow',
         paddingBottom: 15
     },
     // View More Pressable
     ViewMorePressable:{
-
+        display:'flex',
+        alignItems:'flex-end',
+    },
+    PressableButton:{
+        backgroundColor:'#f05',
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+        borderRadius:20,
+        elevation: 10
+    },
+    PressableText:{
+        color:'#ffffff',
+        fontWeight:'bold',
+        letterSpacing:1.4
     }
 })
