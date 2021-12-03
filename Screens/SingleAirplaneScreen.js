@@ -1,9 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text, View, SafeAreaView, ScrollView, Dimensions, Image, Pressable, ActivityIndicator, ActionSheetIOS } from 'react-native';
 import { Ionicons,MaterialCommunityIcons, AntDesign } from '@expo/vector-icons';
+import Barcode from 'react-native-barcode-expo';
 
 import Avatar from '../assets/images/FlagSN.png';
-
+import Logo from '../assets/images/logo3.png';
 
 import {useFonts,
     Inter_100Thin,
@@ -32,8 +33,6 @@ const SingleAirplaneScreen = ({navigation,route}) => {
         Inter_800ExtraBold,
         Inter_900Black,
     });
-    
-    console.log(item)
 
     return (fontsLoaded)? (
         <SafeAreaView style={styles.SingleAirplaneContainer}>
@@ -41,7 +40,9 @@ const SingleAirplaneScreen = ({navigation,route}) => {
                 {/* Header SingleAirplaneScreen */}
                 <View style={styles.ViewHeader}>
                     <View style={styles.ViewHeaderContentLeft} >
-                        <Ionicons name="md-chevron-back-outline" size={24} color="white" />
+                        <Pressable onPress={() => navigation.navigate("Home")} style={styles.PressableBackHome}>
+                            <Ionicons name="md-chevron-back-outline" size={24} color="white" />
+                        </Pressable>
                         <Text style={styles.TextTitleScreen}>Détail du vol</Text>
                     </View>
                     <Image source={Avatar} style={styles.Avatar}/>
@@ -79,7 +80,7 @@ const SingleAirplaneScreen = ({navigation,route}) => {
                         </View>
 
                         <View style={styles.ViewDc}>
-                            <Text style={styles.TextDcLabelName}>Nom de la compagnie</Text>
+                            <Text style={[styles.TextDcLabelName,{textAlign:'right', paddingRight:20}]}>Nom de la compagnie</Text>
                             <Text style={styles.TextCompagnyName}>{item.airline.name}</Text>
                             
                         </View>
@@ -87,26 +88,31 @@ const SingleAirplaneScreen = ({navigation,route}) => {
 
                     {/* Flight Number and Infos */}
                     <View style={styles.ViewFlyContainer}>
-                        <Text style={styles.TextFlyDescribe}>Informations supplementaires du vol</Text>
+                        <Text style={styles.TextFlyDescribe}>Informations supplémentaires du vol</Text>
                         
                         <View style={styles.ViewFlyItems}>
                             <View style={styles.ViewFlyItem}>
                                 <Text style={styles.TextFlyItemLabelName}>Numero</Text>
-                                <Text style={styles.TextFlyItemValue}>404</Text>
+                                <Text style={[styles.TextFlyItemValue,{textAlign:'center'}]}>404</Text>
                             </View>
 
                             <View style={styles.ViewFlyItem}>
-                                <Text style={styles.TextFlyItemLabelName}>ICAO</Text>
+                                <Text style={[styles.TextFlyItemLabelName, {textAlign:'center'}]}>ICAO</Text>
                                 <Text style={styles.TextFlyItemValue}>IAW404</Text>
                             </View>
 
                             <View style={styles.ViewFlyItem}>
-                                <Text style={styles.TextFlyItemLabelName}>IATA</Text>
+                                <Text style={[styles.TextFlyItemLabelName,{textAlign:'center'}]}>IATA</Text>
                                 <Text style={styles.TextFlyItemValue}>IA404</Text>
                             </View>
                         </View>
                     </View>
 
+
+                    {/* QR Code */}
+                    <View style={{paddingTop:20}}>
+                        <Barcode value="Mon Code Bar" text="Carte d'embarquement" format="CODE128"/>
+                    </View>
                 </View>
 
 
@@ -114,11 +120,23 @@ const SingleAirplaneScreen = ({navigation,route}) => {
             </ScrollView>
         </SafeAreaView>
     ): (
-        <SafeAreaView style={styles.SingleAirplaneContainer}>
-            <View style={{paddingTop:40}}>
-                <Text>En chargement...</Text>
-                <ActivityIndicator color="#f05"/>
+        <SafeAreaView style={[styles.SingleAirplaneContainer,styles.SingleAirplaneContainerLoader]}>
+            {/* Header SingleAirplaneScreen */}
+            <View style={styles.ViewHeader}>
+                    <View style={styles.ViewHeaderContentLeft} >
+                        <Pressable onPress={() => navigation.navigate("Home")} style={styles.PressableBackHome}>
+                            <Ionicons name="md-chevron-back-outline" size={24} color="white" />
+                        </Pressable>
+                        <Text style={styles.TextTitleScreen}>Détail du vol</Text>
+                    </View>
+                    <Image source={Avatar} style={styles.Avatar}/>
             </View>
+
+            {/* <View style={styles.ActivityIndicator}> */}
+                <Image source={Logo} style={styles.LogoLoader}/>
+                <ActivityIndicator style={styles.ActivityIndicator} color="#f05" size="large"/>
+            {/* </View> */}
+            
         </SafeAreaView>
     )
 }
@@ -129,6 +147,9 @@ const styles = StyleSheet.create({
     SingleAirplaneContainer:{
         backgroundColor:'#009482',
         paddingTop: 24,
+    },
+    SingleAirplaneContainerLoader:{
+        height: Dimensions.get("screen").height
     },
     ViewHeader:{
         backgroundColor:'#009482',
@@ -142,6 +163,10 @@ const styles = StyleSheet.create({
     ViewHeaderContentLeft:{
         flexDirection:'row',
         alignItems:'center',
+    },
+    PressableBackHome:{
+        backgroundColor:'orangered',
+        borderRadius: 50
     },
     TextTitleScreen:{
         marginLeft: 10,
@@ -231,6 +256,50 @@ const styles = StyleSheet.create({
         textAlign:'right',
         fontFamily:'Inter_500Medium',
         fontSize: 18,
-        letterSpacing: 0.2
+        letterSpacing: 0.2,
+        width: '90%'
     },
+    // ViewFlyContainer
+    ViewFlyContainer:{
+        // backgroundColor:'yellow',
+        paddingTop: 40
+    },
+    TextFlyDescribe:{
+        color:'#d2d2d2',
+        paddingBottom:20,
+        fontSize: 15,
+        letterSpacing:0.4
+    },
+    ViewFlyItems:{
+        display:'flex',
+        flexDirection:'row',
+        justifyContent:'space-between'
+    },
+    ViewFlyItem:{
+        // backgroundColor:'orangered'
+    },
+    TextFlyItemLabelName:{
+        fontFamily:'Inter_500Medium',
+        textTransform:'uppercase',
+        fontSize: 15
+    },
+    TextFlyItemValue:{
+        fontFamily:'Inter_800ExtraBold',
+        fontSize: 22,
+        letterSpacing: 0.4,
+        paddingTop:10,
+        color:'#009482'
+    },
+    // LogoLoader
+    LogoLoader:{
+        width: Dimensions.get('screen').width,
+        height: Dimensions.get('screen').width,
+        opacity: 0.4,
+        position:'absolute',
+        top: Dimensions.get('screen').width / 2
+    },
+    ActivityIndicator:{
+        position:'relative',
+        top: Dimensions.get('screen').width / 1.7
+    }
 })
