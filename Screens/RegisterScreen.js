@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingHorizontal: 10,
         paddingTop: 20,
-        backgroundColor:'#2FDD92',
+        backgroundColor:'#009482',
     },
     ViewWelcome:{
         display: 'flex',
@@ -151,7 +151,8 @@ const styles = StyleSheet.create({
         fontSize: 35,
         letterSpacing: 2,
         width: '50%',
-        fontFamily: 'Inter_800ExtraBold'
+        fontFamily: 'Inter_800ExtraBold',
+        color:'#ffffff'
     },
     travelImage:{
         width: '50%',
@@ -194,7 +195,8 @@ const styles = StyleSheet.create({
         width:'100%'
     },
     TextForgetPassword:{
-        textAlign:'right'
+        textAlign:'right',
+        color:'#ffffff'
     },
     // Touchable Button
     TouchableButton:{
@@ -223,6 +225,7 @@ const styles = StyleSheet.create({
         marginLeft:0,    
     },
     TextAlreadyAccount:{
-        marginRight:5
+        marginRight:5,
+        color:'#fff'
     }
 })

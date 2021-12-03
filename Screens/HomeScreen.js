@@ -41,7 +41,7 @@ const HomeScreen = ({navigation}) => {
         return <View style={styles.SimpleFlyContainer}>
             <View style={styles.ViewAirport}>
                 <View style={styles.ViewDeparture}>
-                    <Text style={styles.AirportName}>{item.departure.airport} </Text>
+                    <Text style={styles.AirportName}>{item.departure.airport}</Text>
                     <Text style={styles.CodeCity}>({item.departure.iata})</Text>
                 </View>
                 <Text style={styles.ViewNameCompagny}>{item.airline.name}</Text>
@@ -77,6 +77,10 @@ const HomeScreen = ({navigation}) => {
         </View>
     }
 
+    const HandleSearch = (txt) => {
+        setTextSearch(txt);
+    }
+
     useEffect( ()=>{
         fetchFlightsData();
     },[])
@@ -101,7 +105,7 @@ const HomeScreen = ({navigation}) => {
                     {/* For Search */}
                     
                     <View style={styles.FieldSearch}>
-                        <TextInput style={styles.TextInputSearch} placeholder="Recherche..." value={textSearch} onChangeText={ text => setTextSearch(text)} />
+                        <TextInput style={styles.TextInputSearch} placeholder="Recherche..." value={textSearch} onChangeText={ text => HandleSearch(text) } />
                         <AntDesign name="search1" size={18} color="black" />
                     </View>
 
@@ -209,7 +213,7 @@ const styles = StyleSheet.create({
     },
     // Section Welcome
     ViewHeader:{
-        backgroundColor:'#161853',
+        backgroundColor:'#009482',
         paddingHorizontal:10,
         borderBottomLeftRadius: 0,
         borderBottomRightRadius: 100

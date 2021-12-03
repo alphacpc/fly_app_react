@@ -34,7 +34,7 @@ const App = () => {
           {/* <Stack.Screen options={{headerShown:false}} name="Register" component={RegisterScreen}/> */}
           {/* <Stack.Screen options={{headerShown:false}} name="ResetPassword" component={ResetPasswordScreen}/> */}
           <Stack.Screen options={{headerShown:false}} name="Home" component={HomeScreen}/>
-          <Stack.Screen options={{headerShown:false}} name="SingleAirplane" component={SingleAirplaneScreen}/>
+          {/* <Stack.Screen options={{headerShown:false}} name="SingleAirplane" component={SingleAirplaneScreen}/> */}
         </Stack.Navigator>
       </NavigationContainer>
     </FirebaseContext.Provider>
