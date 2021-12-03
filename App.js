@@ -9,6 +9,7 @@ import HomeScreen from './Screens/HomeScreen';
 import LoginScreen from './Screens/LoginScreen';
 import RegisterScreen from './Screens/RegisterScreen';
 import ResetPasswordScreen from './Screens/ResetPasswordScreen';
+import SingleAirplaneScreen from './Screens/SingleAirplaneScreen';
 
 
 //Firebase
@@ -33,6 +34,7 @@ const App = () => {
           {/* <Stack.Screen options={{headerShown:false}} name="Register" component={RegisterScreen}/> */}
           {/* <Stack.Screen options={{headerShown:false}} name="ResetPassword" component={ResetPasswordScreen}/> */}
           <Stack.Screen options={{headerShown:false}} name="Home" component={HomeScreen}/>
+          <Stack.Screen options={{headerShown:false}} name="SingleAirplane" component={SingleAirplaneScreen}/>
         </Stack.Navigator>
       </NavigationContainer>
     </FirebaseContext.Provider>

@@ -1,22 +1,25 @@
 import axios from 'axios';
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, ImageBackground, View, Image, ActivityIndicator, SafeAreaView, FlatList, ScrollView, Dimensions, Pressable, TextInput } from 'react-native';
-import { Ionicons, AntDesign } from '@expo/vector-icons'; 
-import Travel from "./../assets/images/Travel2.png";
+import { StyleSheet, Text, View, Image, ActivityIndicator, SafeAreaView, FlatList, ScrollView, Dimensions, Pressable, TextInput } from 'react-native';
+import { AntDesign } from '@expo/vector-icons'; 
 
+
+import Travel from "./../assets/images/Travel2.png";
 import Logo from '../assets/images/logo3.png';
 import Avatar from '../assets/images/FlagSN.png';
+
 import API from "../AvionStackApi";
 import datas from '../Values';
 
 
 const widthScreen = Dimensions.get("screen").width;
 
-const HomeScreen = () => {
+const HomeScreen = ({navigation}) => {
 
     const url = `http://api.aviationstack.com/v1/flights?access_key=${API}`;
     const [flightsData, setFlightData] = useState(null);
     const [loaderData, setLoaderData] = useState(true);
+    const [textSearch, setTextSearch] = useState('');
 
     const fetchFlightsData = async() => {
         // try{
@@ -38,13 +41,13 @@ const HomeScreen = () => {
         return <View style={styles.SimpleFlyContainer}>
             <View style={styles.ViewAirport}>
                 <View style={styles.ViewDeparture}>
-                    <Text>{item.departure.airport} </Text>
-                    <Text>({item.departure.iata})</Text>
+                    <Text style={styles.AirportName}>{item.departure.airport} </Text>
+                    <Text style={styles.CodeCity}>({item.departure.iata})</Text>
                 </View>
                 <Text style={styles.ViewNameCompagny}>{item.airline.name}</Text>
                 <View style={styles.ViewArrival}>
-                    <Text style={{textAlign:'right'}}>{item.arrival.airport}</Text>
-                    <Text style={{textAlign:'right'}}>({item.arrival.iata})</Text>
+                    <Text style={[styles.AirportName,{textAlign:'right'}]}>{item.arrival.airport}</Text>
+                    <Text style={[styles.CodeCity,{textAlign:'right'}]}>({item.arrival.iata})</Text>
                 </View>
             </View>
 
@@ -56,19 +59,19 @@ const HomeScreen = () => {
 
             <View style={styles.ViewTimes}>
                 <View>
-                    <Text>Depart</Text>
-                    <Text>{item.departure.scheduled.substring(item.departure.scheduled.indexOf("T")+1,item.departure.scheduled.indexOf("+")-3)}</Text>
+                    <Text style={styles.TextLabelName}>Départ</Text>
+                    <Text style={styles.TextLabelValue}>{item.departure.scheduled.substring(item.departure.scheduled.indexOf("T")+1,item.departure.scheduled.indexOf("+")-3)}</Text>
                 </View>
                 <View>
-                    <Text>Arrivee</Text>
-                    <Text style={{textAlign:'right'}}>{item.arrival.scheduled.substring(item.arrival.scheduled.indexOf("T")+1,item.arrival.scheduled.indexOf("+")-3)}</Text>
+                    <Text style={styles.TextLabelName}>Arrivée</Text>
+                    <Text style={[styles.TextLabelValue,{textAlign:'right'}]}>{item.arrival.scheduled.substring(item.arrival.scheduled.indexOf("T")+1,item.arrival.scheduled.indexOf("+")-3)}</Text>
 
                 </View>
             </View>
 
             <View style={styles.ViewMorePressable}>
-                <Pressable style={styles.PressableButton}>
-                    <Text style={styles.PressableText}>View more</Text>
+                <Pressable style={styles.PressableButton} onPress={() => navigation.navigate("SingleAirplane",{item})}>
+                    <Text style={styles.PressableText}>Voir plus</Text>
                 </Pressable>
             </View>
         </View>
@@ -98,11 +101,11 @@ const HomeScreen = () => {
                     {/* For Search */}
                     
                     <View style={styles.FieldSearch}>
-                        <TextInput placeholder="Recherche..." />
+                        <TextInput style={styles.TextInputSearch} placeholder="Recherche..." value={textSearch} onChangeText={ text => setTextSearch(text)} />
                         <AntDesign name="search1" size={18} color="black" />
                     </View>
 
-                    <Text style={styles.TextMesageFlights} >{flightsData.length} vols disponibles pour le moment</Text>
+                    <Text style={styles.TextMesageFlights} >{flightsData.length} vols disponibles pour le moment.</Text>
                     
                     {/* Airplane List */}
                     <FlatList
@@ -161,6 +164,15 @@ const styles = StyleSheet.create({
         justifyContent:'flex-end',
         alignContent:'flex-end',
     },
+    AirportName:{
+        fontWeight:'bold',
+        fontSize: 15,
+        letterSpacing: 0.5
+    },
+    CodeCity:{
+        color: 'orangered',
+        letterSpacing: 1.2
+    },
     // View Times
     ViewTimes:{
         flexDirection:'row',
@@ -168,13 +180,23 @@ const styles = StyleSheet.create({
         alignItems:'center',
         paddingBottom: 15
     },
+    TextLabelName:{
+        fontWeight: 'bold',
+        letterSpacing:1.4,
+        fontSize: 15,
+        paddingBottom: 5
+    },
+    TextLabelValue:{
+        color:'#d2d2d2',
+        fontSize: 20
+    },
     // View More Pressable
     ViewMorePressable:{
         display:'flex',
         alignItems:'flex-end',
     },
     PressableButton:{
-        backgroundColor:'#f05',
+        backgroundColor:'orangered',
         paddingVertical: 10,
         paddingHorizontal: 10,
         borderRadius:20,
@@ -182,7 +204,7 @@ const styles = StyleSheet.create({
     },
     PressableText:{
         color:'#ffffff',
-        fontWeight:'bold',
+        fontWeight:'normal',
         letterSpacing:1.4
     },
     // Section Welcome
@@ -207,13 +229,13 @@ const styles = StyleSheet.create({
     ViewTextIntro:{
         position:'absolute',
         top: widthScreen / 3,
-        paddingLeft: 10
+        paddingLeft: 10,
     },
     TextIntroBold:{
         fontSize: 35,
         fontWeight: "700",
         lineHeight: 50,
-        color:'#ffffff'
+        color:'#ffffff',
     },
     TextIntroNoBold:{
         fontSize: 18,
@@ -237,12 +259,19 @@ const styles = StyleSheet.create({
         alignItems:'center',
         paddingHorizontal:20,
         paddingVertical:10,
-        borderRadius:20,
+        borderRadius:40,
         marginTop: 30
+    },
+    TextInputSearch:{
+        width: '90%',
+        paddingVertical: 2,
+        fontSize: 18,
+        letterSpacing:1
     },
     TextMesageFlights:{
         paddingVertical: 20,
-        fontSize: 15,
-        fontWeight:'bold'
+        fontSize: 18,
+        fontWeight:'400',
+        letterSpacing:0.4
     },
 })
