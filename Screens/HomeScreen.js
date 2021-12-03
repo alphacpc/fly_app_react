@@ -1,10 +1,11 @@
 import axios from 'axios';
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, View, Image, ActivityIndicator, SafeAreaView, FlatList, ScrollView, Dimensions, Pressable } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; 
+import { StyleSheet, Text, ImageBackground, View, Image, ActivityIndicator, SafeAreaView, FlatList, ScrollView, Dimensions, Pressable, TextInput } from 'react-native';
+import { Ionicons, AntDesign } from '@expo/vector-icons'; 
 import Travel from "./../assets/images/Travel2.png";
 
-
+import Logo from '../assets/images/logo3.png';
+import Avatar from '../assets/images/FlagSN.png';
 import API from "../AvionStackApi";
 import datas from '../Values';
 
@@ -81,12 +82,29 @@ const HomeScreen = () => {
     return (!loaderData)? (
         <SafeAreaView style={styles.HomeContainer}>
             <ScrollView showsVerticalScrollIndicator={false}>
-                <View>
-                    <Text>HomeScreen modification nice</Text>
+                <View style={styles.ViewHeader}>
+                    <View style={styles.ViewTopHeader}>
+                        <Text></Text>
+                        <Image style={styles.FlagSn} source={Avatar}/>
+                    </View>
+                    <View style={styles.ViewTextIntro}>
+                        <Text style={styles.TextIntroBold}>Hello Alpha DIALLO, Bienvenue sur Tooky</Text>
+                        <Text style={styles.TextIntroNoBold}>Rechercher un vol en un clic !</Text>
+                    </View>
+                    <Image source={Logo} style={styles.ImageLogo}/>
                 </View>
 
-                <View>
-                    <Text>{flightsData.length} vols disponibles, pour le moment</Text>
+                <View style={styles.ViewFlightsContainer}>
+                    {/* For Search */}
+                    
+                    <View style={styles.FieldSearch}>
+                        <TextInput placeholder="Recherche..." />
+                        <AntDesign name="search1" size={18} color="black" />
+                    </View>
+
+                    <Text style={styles.TextMesageFlights} >{flightsData.length} vols disponibles pour le moment</Text>
+                    
+                    {/* Airplane List */}
                     <FlatList
                         data={flightsData}
                         showsVerticalScrollIndicator={false}
@@ -114,7 +132,6 @@ export default HomeScreen
 const styles = StyleSheet.create({
     HomeContainer:{
         flex:1,
-        paddingHorizontal: 10,
         paddingTop: 20,
     },
     // SimpleFlyContainer
@@ -167,5 +184,65 @@ const styles = StyleSheet.create({
         color:'#ffffff',
         fontWeight:'bold',
         letterSpacing:1.4
-    }
+    },
+    // Section Welcome
+    ViewHeader:{
+        backgroundColor:'#161853',
+        paddingHorizontal:10,
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 100
+    },
+    ViewTopHeader:{
+        flexDirection:'row',
+        justifyContent:'space-between',
+        alignItems:'center',
+        paddingTop: 10
+    },
+    FlagSn:{
+        width: 40,
+        height: 40,
+        borderRadius: 50,
+        elevation: 10
+    },
+    ViewTextIntro:{
+        position:'absolute',
+        top: widthScreen / 3,
+        paddingLeft: 10
+    },
+    TextIntroBold:{
+        fontSize: 35,
+        fontWeight: "700",
+        lineHeight: 50,
+        color:'#ffffff'
+    },
+    TextIntroNoBold:{
+        fontSize: 18,
+        fontStyle:'italic',
+        color:'#ffffff',
+        paddingTop:20
+    },
+    ImageLogo:{
+        width: widthScreen,
+        height: widthScreen,
+        opacity: .2
+    },
+    // View Flights Container
+    ViewFlightsContainer:{
+        paddingHorizontal: 10
+    },
+    FieldSearch:{
+        backgroundColor:'gold',
+        flexDirection:'row',
+        justifyContent:'space-between',
+        alignItems:'center',
+        paddingHorizontal:20,
+        paddingVertical:10,
+        borderRadius:20,
+        marginTop: 30
+    },
+    TextMesageFlights:{
+        paddingVertical: 20,
+        fontSize: 15,
+        fontWeight:'bold'
+    },
 })

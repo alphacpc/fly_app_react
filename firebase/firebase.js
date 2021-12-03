@@ -13,11 +13,6 @@ if (!firebase.apps.length) {
 
 const Firebase = {
 
-    // constructor(){
-    //     firebase.initializeApp(firebaseConfig);
-    //     this.auth = firebase.auth();
-    //     this.db = firebase.firestore();
-    // }
 
     /**INSCRIPTION */
     singupUser : (email, password) => firebase.auth().createUserWithEmailAndPassword(email.trim(),password),
